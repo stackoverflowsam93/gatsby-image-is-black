@@ -1,15 +1,25 @@
-import React from "react"
+import React, {useEffect} from "react"
 import { Link, graphql } from "gatsby"
 
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
+import Img from 'gatsby-image'
+import ReactDOMServer from 'react-dom/server'
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
   const siteTitle = data.site.siteMetadata.title
   const { previous, next } = pageContext
+
+  useEffect(() => {
+    const injectDivs = Array.from(document.getElementsByClassName('injectImage'))
+    injectDivs.forEach((aDiv) => {
+      aDiv.innerHTML = ReactDOMServer.renderToString(<Img fluid={data.allFile.edges[0].node.childImageSharp.fluid} />)  
+    })
+  }, [])
+
 
   return (
     <Layout location={location} title={siteTitle}>
@@ -85,6 +95,28 @@ export const pageQuery = graphql`
     site {
       siteMetadata {
         title
+      }
+    }
+    allFile(
+      filter: {
+          extension: {regex: "/(jpg)|(jpeg)|(png)/"},
+      }
+    ){
+      edges {
+          node {
+              relativePath
+              childImageSharp {
+                fluid(maxWidth: 110) {
+                  aspectRatio
+                  originalName
+                  sizes
+                  src
+                  srcSet
+                  srcWebp
+                  tracedSVG
+                }
+              }
+          }
       }
     }
     markdownRemark(fields: { slug: { eq: $slug } }) {
