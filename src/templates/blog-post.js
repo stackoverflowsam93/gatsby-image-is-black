@@ -14,9 +14,9 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
   const { previous, next } = pageContext
 
   useEffect(() => {
-    const injectDivs = Array.from(document.getElementsByClassName('injectImage'))
-    injectDivs.forEach((aDiv) => {
-      aDiv.innerHTML = ReactDOMServer.renderToString(<Img fluid={data.allFile.edges[0].node.childImageSharp.fluid} />)  
+    const injectDivs = Array.from(document.getElementsByClassName("injectImage"))
+    injectDivs.forEach(aDiv => {
+      ReactDOM.render(<Img fluid={data.allFile.edges[0].node.childImageSharp.fluid} />, aDiv)
     })
   }, [])
 
